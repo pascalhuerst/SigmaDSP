@@ -122,6 +122,8 @@ class SigmaDSP
     void compressorRMS(uint16_t startMemoryAddress,  compressor_t &compressor);
     void compressorPeak(uint16_t startMemoryAddress, compressor_t &compressor);
 
+    void invert(uint16_t startMemoryAddress, bool invert);
+
     // Hardware functions
     void muteADC(bool mute);
     void muteDAC(bool mute);
@@ -139,7 +141,7 @@ class SigmaDSP
     template <typename Address, typename Data1, typename... DataN>
     void safeload_write(const Address &address, const Data1 &data1, const DataN &...dataN);
 
-    void safeload_writeRegister(uint16_t memoryAddress, uint8_t *data, bool finished);
+    void safeload_writeRegister(uint16_t memoryAddress, const uint8_t *data, bool finished);
     void safeload_writeRegister(uint16_t memoryAddress,  int32_t data, bool finished);
     void safeload_writeRegister(uint16_t memoryAddress,    float data, bool finished);
     #if defined(ARDUINO_ARCH_ESP8266) || defined(ARDUINO_ARCH_ESP32)
@@ -186,6 +188,9 @@ class SigmaDSP
     
     // Private variables
     uint16_t _dspRegAddr;      // Used by template safeload functions
+
+    static const uint8_t ONE[5];
+    static const uint8_t MINUS_ONE[5];
 };
 
 

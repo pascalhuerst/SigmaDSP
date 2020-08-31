@@ -2,6 +2,13 @@
 #include "Arduino.h"
 
 /*******************************************************************************************
+**                                      STATIC MEMBERS                                    **
+*******************************************************************************************/
+
+const uint8_t SigmaDSP::ONE[5]        = {0x00, 0x00, 0x80, 0x00, 0x00};
+const uint8_t SigmaDSP::MINUS_ONE[5]  = {0x00, 0xFF, 0x80, 0x00, 0x00};
+
+/*******************************************************************************************
 **                                      PUBLIC METHODS                                    **
 *******************************************************************************************/
 
@@ -870,6 +877,17 @@ void SigmaDSP::compressorPeak(uint16_t startMemoryAddress, compressor_t &compres
   safeload_writeRegister(startMemoryAddress, storeData, true);
 }
 
+/***************************************
+Function: invert()
+Purpose:  Inverts a channel in the DSP
+Inputs:   uint16_t startMemoryAddress;   DSP memory address
+          bool invert;                   True if inverted, false if not inverted
+Returns:  None
+***************************************/
+void SigmaDSP::invert(uint16_t startMemoryAddress, bool invert)
+{
+  safeload_writeRegister(startMemoryAddress, invert ? SigmaDSP::MINUS_ONE : SigmaDSP::ONE, true);
+}
 
 /***************************************
 Function: muteADC()
@@ -939,7 +957,7 @@ Inputs:   uint16_t startMemoryAddress;   DSP memory address
           bool finished;                 Indicates if this is the last packet or not
 Returns:  None
 ***************************************/
-void SigmaDSP::safeload_writeRegister(uint16_t memoryAddress, uint8_t *data, bool finished)
+void SigmaDSP::safeload_writeRegister(uint16_t memoryAddress, const uint8_t *data, bool finished)
 {
   static uint8_t _safeload_count = 0; // Keeps track of the safeload count
   
